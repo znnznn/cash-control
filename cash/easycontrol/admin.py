@@ -4,6 +4,10 @@ from django.contrib.auth.admin import UserAdmin as userAdmin
 from django.utils.translation import ugettext_lazy as msg
 from .models import *
 
+AdminSite.site_header = msg('Easy Cash Control')
+AdminSite.site_title = msg('EasyCash')
+
+
 # Register your models here.
 @admin.register(User)
 class UserAdmin(userAdmin):
