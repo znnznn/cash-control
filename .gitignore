@@ -151,4 +151,6 @@ yarn-error.log*
 django_static/
 cash/cash/__pycache__/__init__.cpython-39.pyc
 *.pyc
+.sqlite3
 
+cash/db.sqlite3

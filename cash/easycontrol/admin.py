@@ -7,6 +7,11 @@ from .models import *
 AdminSite.site_header = msg('Easy Cash Control')
 AdminSite.site_title = msg('EasyCash')
 
+admin.site.register(Organization)
+admin.site.register(Currency)
+admin.site.register(CashRegister)
+admin.site.register(Transaction)
+
 
 # Register your models here.
 @admin.register(User)
