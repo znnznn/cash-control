@@ -25,7 +25,7 @@ SECRET_KEY = 'zm8i5(b_81o!_dk=0a4-(q-kbem$v-t-fmhpa!o4e!pw8hpc^('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'easycontrol',
 ]
@@ -123,3 +124,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_REDIRECT_URL = '/cash/'
+LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/login/'
