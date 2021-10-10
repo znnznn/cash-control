@@ -1,0 +1,59 @@
+{% extends 'registration/main.html'  %}
+
+{% block title  %}
+     {{ title }}
+
+{% endblock %}
+
+{% block body  %}
+    <table class="table table thead-light th">
+        <thead>
+            <tr bgcolor="#007bff" style="color:#fff">
+                  <th>email</th>
+                  <th>description</th>
+                  <th>debit</th>
+                  <th>credit</th>
+                  <th>status</th>
+                  <th>created at</th>
+                  <th>date of close</th>
+                  <th>cash register name</th>
+                  <th>balance {{ balance.balance }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in transaction %}
+                <tr bgcolor="#1de04e" style="color:#fff">
+                    <td><li class="list-inline-item"><a href="{% url 'user_detail' %}">{{ item.user_id.email }} | {{ item.user_id.last_name}}</a></li></td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.debit }}</td>
+                    <td>{{ item.credit }}</td>
+                    {% if item.status == 'AC' %}
+                    <td>Active</td>
+                    {% elif item.status == 'US' %}
+                    <td>Unsuccessful</td>
+                    {% else %}
+                    <td>Payed</td>
+                    {% endif %}
+                    <td>{{ item.created_at }}</td>
+                    {% if not item.date_of_close%}
+                    <td>No confirmed</td>
+                    {% else %}
+                    <td>{{ item.date_of_close }}</td>
+                    {% endif %}
+                    <td><li class="list-inline-item"><a href="{% url 'cash_register' item.cash_register_id.id %}">{{ item.cash_register_id.name }} | {{ item.cash_register_id.currency_id.code }}</a></li></td>
+                    {% if btn and item.status != 'P' %}
+                    <td> <form id="click-green" action="{% url 'transaction_confirm' %}" method="post" >{% csrf_token %}<input type="hidden" name="transaction" value="{{ item }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Edit | Delete | Confirm</button></form>{% csrf_token %}</td>
+                    {% elif  not btn and item.status == 'AC' %}
+                    <td> <form id="click-red" action="{% url 'transaction_confirm' %}" method="post" >{% csrf_token %}<input type="hidden" name="transaction" value="{{ item }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Confirm</button></form>{% csrf_token %}</td>
+                    {% elif item.status == 'US' %}
+                    <td>Unsuccessful</td>
+                    {% else %}
+                    <td>Confirmed</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+     </table>
+
+
+{% endblock %}
