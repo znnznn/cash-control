@@ -102,6 +102,7 @@ class Transaction(models.Model):
     credit = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.CharField(max_length=55, choices=STATUS_CHOICE, default='Active')
     created_at = models.DateField(default=timezone.now)
+    date_of_close = models.DateField(blank=True, null=True)
     cash_register_id = models.ForeignKey(CashRegister, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
