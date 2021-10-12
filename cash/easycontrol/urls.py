@@ -4,8 +4,9 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('', UserViews.as_view(), name='home'),
-    path('user/', UserViews.as_view(), name='user_detail'),
+    path('', TransactionList.as_view(), name='home'),
+    path('user/detail', UserDetail.as_view(), name='user_detail'),
+    path('user/delete', UserDetail.as_view(), name='del_profile'),
     path('user/contacts/', UserViews.as_view(), name='user_contacts'),
     path('user/transaction/', UserViews.as_view(), name='transaction_list'),
     path('user/report/', UserViews.as_view(), name='report'),
