@@ -1,0 +1,103 @@
+{% extends 'registration/main.html'  %}
+
+{% block title  %}
+     {{ title }}
+
+{% endblock %}
+
+{% block body  %}
+
+<body class="bg-light">
+ {% if user %}
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+       <li class="nav-item"><a class="nav-link" href="{% url 'del_profile' %}">Delete profile</a></li>
+    </ul>
+  </div>
+    </nav>
+</div>
+ {% endif %}
+    <div class="container">
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3" style="color:#535556">{{ user.first_name }} your data</h4>
+      <form method="post" class="needs-validation" novalidate="" style="color:#535556">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Name</label>
+            <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Name" value="{{ user.first_name }}" required="">
+            <div class="invalid-feedback">
+              Add name
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Last name</label>
+            <input type="text" class="form-control" id="lastName" name="last_name" value="{{ user.last_name }}" placeholder="Last name"  required="">
+            <div class="invalid-feedback">
+              Add Last name
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="mb-3">
+          <label for="email">Email <span class="text-muted"></span></label>
+          <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" placeholder="you@example.com" required="">
+          <div class="invalid-feedback">
+            Add email
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="mobile">Mobile</label>
+          <input type="text" class="form-control" id="mobile" name="mobile" value="{{ user.mobile }}" placeholder="+38099234567" required="">
+          <div class="invalid-feedback">
+            Add Mobile
+          </div>
+        </div>
+         <div class="col-md-6 mb-3">
+          <label for="date_of_birth">Date of birth</label>
+          <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth }}" placeholder="30" required="">
+          <div class="invalid-feedback">
+            Add Date of birth
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="gender">Gender</label>
+          <input type="text" class="form-control" id="gender" name="gender" value="{{ user.gender }}" placeholder="M or F" required="">
+          <div class="invalid-feedback">
+            Add Gender
+          </div>
+        </div>
+
+
+
+        </div>
+
+
+        <hr class="mb-4">
+
+        <h4 class="mb-3"></h4>
+
+          <p>
+            <a>
+              <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Change</button>
+            </a>
+
+
+      </form>
+    </div>
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">© 2021-2022 Easy cash Control</p>
+  </footer>
+
+</body>
+
+{% endblock %}

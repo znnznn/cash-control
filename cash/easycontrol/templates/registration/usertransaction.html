@@ -6,24 +6,25 @@
 {% endblock %}
 
 {% block body  %}
-    <table class="table table thead-light th">
+<div class="container">
+    <table class="table table thead-light th table-bordered table-sm">
         <thead>
-            <tr bgcolor="#007bff" style="color:#fff">
-                  <th>email</th>
-                  <th>description</th>
-                  <th>debit</th>
-                  <th>credit</th>
-                  <th>status</th>
-                  <th>created at</th>
-                  <th>date of close</th>
-                  <th>cash register name</th>
-                  <th>balance {{ balance.balance }}</th>
+            <tr bgcolor="#AFEEEE" style="color:#535556">
+                  <th>Email | Name</th>
+                  <th>Description</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                  <th>Status</th>
+                  <th>Created at</th>
+                  <th>Date of close</th>
+                  <th>Cash register</th>
+                  <th>Balance {{ balance.balance }}</th>
             </tr>
         </thead>
         <tbody>
             {% for item in transaction %}
                 <tr bgcolor="#1de04e" style="color:#fff">
-                    <td><li class="list-inline-item"><a href="{% url 'user_detail' %}">{{ item.user_id.email }} | {{ item.user_id.last_name}}</a></li></td>
+                    <td><li class="list-inline-item"><a href="{% url 'user_detail' %}">{{ item.user_id.email }} | {{ item.user_id.last_name }}</a></li></td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.debit }}</td>
                     <td>{{ item.credit }}</td>
@@ -54,6 +55,6 @@
             {% endfor %}
         </tbody>
      </table>
-
+</div>
 
 {% endblock %}
