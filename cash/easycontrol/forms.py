@@ -8,8 +8,11 @@ class LoginUserForm(AuthenticationForm):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
 
 
-class UserCashView(forms.ModelForm):
-    pass
+class UserDetail(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
 
