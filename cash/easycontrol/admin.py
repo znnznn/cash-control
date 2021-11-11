@@ -11,6 +11,8 @@ admin.site.register(Organization)
 admin.site.register(Currency)
 admin.site.register(CashRegister)
 admin.site.register(Transaction)
+admin.site.register(Payee)
+admin.site.register(FileReport)
 
 
 # Register your models here.
