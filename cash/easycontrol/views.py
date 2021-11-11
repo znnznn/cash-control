@@ -77,7 +77,6 @@ class UserDetail(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
 
-
         queryset = User.objects.get(id=self.request.user.id)
         print(queryset)
         print(model_to_dict(queryset))
@@ -95,6 +94,13 @@ class UserDetail(LoginRequiredMixin, UpdateView):
         context['title'] = f"Profile - {self.request.user.first_name}"
         print(444, context)
         return context
+
+
+class SignUpView(CreateView):
+    form_class = PayeeForm
+    model = Payee
+    template_name = 'registration/new_user.html'
+    context_object_name = 'user'
 
 
 class TransactionList(LoginRequiredMixin, ListView):
@@ -150,7 +156,6 @@ class PayeeView(LoginRequiredMixin, CreateView):
     #     # print(self.request.kwargs)
     #     return super(PayeeView, self).post(request, **kwargs)
 
-
     def get_context_data(self, *, object_list=None, **kwargs):
         code = random.randrange(99999, 999999)
         context = super().get_context_data(**kwargs)
@@ -158,6 +163,7 @@ class PayeeView(LoginRequiredMixin, CreateView):
         context['btn'] = self.request.user.is_staff
         context['code'] = code
         print(context)
-
-
         return context
+
+
+

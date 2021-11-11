@@ -13,7 +13,7 @@ urlpatterns = [
     path('user/report/confirm/', VoucherCreateView.as_view(), name='report_confirm'),
     path('user/transaction/confirm/', VoucherCreateView.as_view(), name='transaction_confirm'),
     path('user/transaction/create/', VoucherCreateView.as_view(), name='transaction_create'),
-    path('user/reception/Payee/', PayeeView.as_view(), name='payee'),
+    path('user/reception/payee/', PayeeView.as_view(), name='payee'),
     path('user/cash/register/<int:cash_register>', VoucherCreateView.as_view(), name='cash_register'),
 
 ]
