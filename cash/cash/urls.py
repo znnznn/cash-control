@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from easycontrol import views as custom_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('login/', custom_views.LoginUser.as_view(), name='login'),
     path('register/', auth_views.LoginView.as_view(), name='register'),
-    path('logout/', auth_views.LoginView.as_view(), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('reset/', auth_views.LoginView.as_view(), name='reset'),
     path('cash/', include('easycontrol.urls')),
 ]
