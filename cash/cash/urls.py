@@ -21,7 +21,7 @@ from easycontrol import views as custom_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', custom_views.LoginUser.as_view(), name='login'),
-    path('register/', auth_views.LoginView.as_view(), name='register'),
+    path('signup/', custom_views.SignUpView.as_view(), name='register'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('reset/', auth_views.LoginView.as_view(), name='reset'),
     path('cash/', include('easycontrol.urls')),
