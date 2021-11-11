@@ -18,6 +18,7 @@ STATUS_CHOICE = (
     ('US', 'Unsuccessful'),
 )
 
+
 # Create your models here.
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
