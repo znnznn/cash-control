@@ -66,6 +66,9 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     objects = UserManager()
 
+    def __str__(self):
+        return f'{self.email} {self.first_name} {self.last_name}'
+
 
 class Organization(models.Model):
     full_name = models.CharField(max_length=500, blank=True, null=True)
@@ -92,7 +95,7 @@ class CashRegister(models.Model):
     organisation_id = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.currency_id}'
 
 
 class Transaction(models.Model):
@@ -108,6 +111,26 @@ class Transaction(models.Model):
     def __str__(self):
         return self.description
 
+
+class Payee(models.Model):
+    user_id = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True)
+    email_payee = models.EmailField(msg('email address'))
+    code = models.IntegerField()
+    create_date = models.DateField(default=timezone.now)
+    confirmed_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return self.email_payee
+
+
+class FileReport(models.Model):
+    user_id = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True)
+    transaction_id = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    upload = models.FileField(upload_to='uploads/report', blank=True, null=True)
+    created = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return self.created
 
 
 
