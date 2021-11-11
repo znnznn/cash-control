@@ -10,21 +10,37 @@
 
 
 {% block content %}
-<h1>{{title}}</h1>
+<div style="color:#535556">
+<h1 >{{title}}</h1>
+{{ form.errors }}
+    </div>
+<div class="container col-md-6 mb-3">
+    <body class="text-center" style="color:#FFF5EE">
+    <form action="{% url 'login' %}"  method="post" class="form-signin">
+        {% csrf_token %}
+              <label for="email" class="sr-only">Email address</label>
+              <input type="email" name="email" value="" id="email" class="form-control" placeholder="Email address"  required="">
+                <br>
+              <label for="password" class="sr-only">Password</label>
+              <input type="password" id="password" class="form-control" placeholder="Password" name="password" value="" required="">
+                <div class="invalid-feedback">
+                Please enter your email.
+                </div>
+              <div class="checkbox mb-3" style="color:#535556">
+<!--                <label>-->
+<!--                  <input type="checkbox" value="remember-me" name="remember"> Remember me-->
+<!--                </label>-->
+              </div>
+                <p>
+                   <button  formmethod="post"class="btn btn-lg btn-secondary" type="submit">Sign in</button>{% csrf_token %}
+<!--                    <ul><h2><li class="list-inline-item"><a href="{% url 'register' %}" style="color:#FFF5EE">Sign Up</a></li></h2></ul>-->
 
-<form method="post">
-    {% csrf_token %}
-
-<div class="form-error">{{ form.non_field_errors }}</div>
-
-{% for f in form %}
-<p><label class="form-label">{{f.label}}: </label>{{ f }}</p>
-<div class="form-error">{{ f.errors }}</div>
-{% endfor %}
-
-    <button type="submit">Войти</button>
-</form>
-
+            </form>
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">© 2021-2022 Easy cash Control</p>
+        </footer>
+    </body>
+</div>
 {% endblock %}
 
 

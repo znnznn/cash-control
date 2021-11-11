@@ -24,8 +24,9 @@
  {% endif %}
     <div class="container">
     <div class="col-md-8 order-md-1">
-      <h4 class="mb-3" style="color:#535556">{{ user.first_name }} your data</h4>
-      <form method="post" class="needs-validation" novalidate="" style="color:#535556">
+      <h4 class="mb-3" style="color:#535556">Petty Cash user’s registration page</h4>
+      <form method="post" action="{% url 'user_detail' %}" class="needs-validation" novalidate="" style="color:#535556">
+          {% csrf_token %}
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">Name</label>
@@ -61,19 +62,13 @@
           </div>
         </div>
          <div class="col-md-6 mb-3">
-          <label for="date_of_birth">Date of birth</label>
-          <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth }}" placeholder="30" required="">
+          <label for="date_of_birth">Position (должность)</label>
+          <input type="text" class="form-control" id="date_of_birth" name="date_of_birth" value="" placeholder="Position" required="">
           <div class="invalid-feedback">
             Add Date of birth
           </div>
         </div>
-        <div class="col-md-6 mb-3">
-          <label for="gender">Gender</label>
-          <input type="text" class="form-control" id="gender" name="gender" value="{{ user.gender }}" placeholder="M or F" required="">
-          <div class="invalid-feedback">
-            Add Gender
-          </div>
-        </div>
+
 
 
 
@@ -86,7 +81,7 @@
 
           <p>
             <a>
-              <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Change</button>
+              <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
             </a>
 
 

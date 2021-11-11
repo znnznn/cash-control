@@ -1,0 +1,43 @@
+{% extends 'registration/main.html'  %}
+
+{% block title  %}
+     {{ title }}
+
+{% endblock %}
+
+{% block body  %}
+
+
+
+{% block content %}
+<div class="container" style="color:#535556">
+<h2 >{{title}}</h2>
+</div>
+    <div class="container">
+        <form action="{% url 'transaction_create' %}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <table>
+                    {{ form.as_table  }}
+                </table>
+
+            </div>
+            <div>
+<!--                {% for f in form %}-->
+<!--<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>-->
+<!--<div class="form-error">{{ f.errors }}</div>-->
+<!--{% endfor %}-->
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+  <button formaction="{% url 'home' %}" type="button" class="btn btn-danger">Delete</button>
+  <button formaction="{% url 'report' %}" type="button" class="btn btn-warning">Edit</button>
+  <button formaction="{% url 'report_confirm' %}" type="button" class="btn btn-success">Confirm</button>
+  <button formaction="{% url 'report_confirm' %}" type="button" class="btn btn-success">Add new</button>
+</div>
+        </form>
+    </div>
+
+
+{% endblock %}
+
+
+{% endblock %}

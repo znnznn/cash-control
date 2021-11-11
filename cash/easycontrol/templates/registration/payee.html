@@ -1,0 +1,65 @@
+{% extends 'registration/main.html'  %}
+
+{% block title  %}
+     {{ title }}
+
+{% endblock %}
+
+{% block body  %}
+
+<div class="container">
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3" style="color:#535556">The link for payment confirmation</h4>
+      <form method="post" action="{% url 'payee' %}" class="needs-validation" novalidate="" style="color:#535556">
+          {% csrf_token %}
+<!--        <div class="mb-3">-->
+<!--          <input type="hidden" class="form-control" id="user" name="user_id" value="{{ user_id }}" placeholder="you@example.com" required="">-->
+<!--          <div class="invalid-feedback">-->
+<!--            Add email-->
+<!--          </div>-->
+<!--        </div>-->
+        {{ payee }}
+
+
+        <div class="mb-3">
+          <label for="email_payee">Email payee<span class="text-muted"></span></label>
+          <input type="email" class="form-control" id="email_payee" name="email_payee" value="" placeholder="payee@example.com" required="">
+          <div class="invalid-feedback">
+            Add email
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="code">Enter the email address where to send the registration invitation</label>
+          <input type="hidden" class="form-control" id="code" name="code" value="{{ code }}" placeholder="Code for confirmed" required="">
+          <div class="invalid-feedback">
+            Add Gender
+          </div>
+        </div>
+
+
+
+
+
+
+        <hr class="mb-4">
+
+        <h4 class="mb-3"></h4>
+
+          <p>
+            <a>
+              <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Send to email</button>
+            </a>
+
+
+      </form>
+    </div>
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">© 2021-2022 Easy cash Control</p>
+  </footer>
+
+</body>
+
+{% endblock %}
