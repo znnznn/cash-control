@@ -7,13 +7,13 @@ urlpatterns = [
     path('', TransactionList.as_view(), name='home'),
     path('user/detail', UserDetail.as_view(), name='user_detail'),
     path('user/delete', UserDetail.as_view(), name='del_profile'),
-    path('user/contacts/', UserViews.as_view(), name='user_contacts'),
-    path('user/transaction/', UserViews.as_view(), name='transaction_list'),
-    path('user/report/', UserViews.as_view(), name='report'),
-    path('user/report/confirm/', UserViews.as_view(), name='report_confirm'),
-    path('user/transaction/confirm/', UserViews.as_view(), name='transaction_confirm'),
-    path('user/transaction/create/', UserViews.as_view(), name='transaction_create'),
-    path('user/reception/volunteer/', UserViews.as_view(), name='volunteer_reception'),
-    path('user/cash/register/<int:cash_register>', UserViews.as_view(), name='cash_register'),
+    path('user/contacts/', VoucherCreateView.as_view(), name='user_contacts'),  # not done
+    path('user/transaction/', TransactionList.as_view(), name='transaction_list'),
+    path('user/report/', VoucherCreateView.as_view(), name='report'),
+    path('user/report/confirm/', VoucherCreateView.as_view(), name='report_confirm'),
+    path('user/transaction/confirm/', VoucherCreateView.as_view(), name='transaction_confirm'),
+    path('user/transaction/create/', VoucherCreateView.as_view(), name='transaction_create'),
+    path('user/reception/Payee/', PayeeView.as_view(), name='payee'),
+    path('user/cash/register/<int:cash_register>', VoucherCreateView.as_view(), name='cash_register'),
 
 ]
