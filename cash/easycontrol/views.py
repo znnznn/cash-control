@@ -1,5 +1,6 @@
 import random
 
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Sum, Case, When, Q, Max, ExpressionWrapper
 from django.forms import model_to_dict
@@ -56,6 +57,7 @@ class VoucherCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
     template_name = 'registration/voucher_create.html'
     context_object_name = 'voucher'
+    #success_url = reverse_lazy('transaction_list')
 
     def form_valid(self, form):
         form.instance.user_id = self.request.user
@@ -66,6 +68,7 @@ class VoucherCreateView(LoginRequiredMixin, CreateView):
         context['title'] = 'Petty Cash Voucher'
         context['btn'] = self.request.user.is_staff
         print(context)
+        context['currency_data'] = exchange()
         return context
 
 
@@ -130,7 +133,7 @@ class TransactionList(LoginRequiredMixin, ListView):
         context['title'] = 'Chek transactions'
         context['balance'] = self.balance
         context['btn'] = self.request.user.is_staff
-        print(context)
+
         print(context['transaction'])
 
         return context
@@ -164,6 +167,16 @@ class PayeeView(LoginRequiredMixin, CreateView):
         context['code'] = code
         print(context)
         return context
+
+
+def exchange(currency_code='USD') -> dict:
+    url = f"https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode={currency_code}&json"
+    my_url = requests.get(url)
+    cookes = my_url.cookies
+    my_url = requests.get(url, cookies=cookes)
+    my_url = my_url.json()
+    currency_rate = my_url[0]
+    return currency_rate
 
 
 
