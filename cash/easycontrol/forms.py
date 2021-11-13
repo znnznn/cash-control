@@ -1,10 +1,11 @@
+import requests
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, ReadOnlyPasswordHashField, UserChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms import Textarea
-
+#from .views import exchange
 from .models import *
 
 
@@ -84,11 +85,21 @@ class CombinedFormBase(forms.Form):
         return cleaned_data
 
 
+def exchange(currency_code='USD'):
+    url = f"https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode={currency_code}&json"
+    my_url = requests.get(url)
+    cookes = my_url.cookies
+    my_url = requests.get(url, cookies=cookes)
+    my_url = my_url.json()
+    currency_rate = my_url[0]
+    return currency_rate['rate']
+
 class VoucherCreateForm(forms.ModelForm):
+    rate = forms.CharField(initial=exchange(), disabled=True)
 
     class Meta:
         model = Transaction
-        fields = ('user_id', 'description', 'debit',  'credit', 'cash_register_id')
+        fields = ('user_id', 'description', 'debit',  'credit', 'cash_register_id', 'rate')
         labels = {
             'user_id': 'Payee name/Email     ',
             'cash_register_id': 'currency UAH ',
@@ -96,10 +107,13 @@ class VoucherCreateForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'cols': 25, 'rows': 2, 'placeholder': 'Office consumables' }),
         }
+
         # help_texts = {
         #     'description': 'Office consumables',
         # }
 
+p = VoucherCreateForm(auto_id=False)
+print(p)
 
 
 
