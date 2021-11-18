@@ -2,6 +2,7 @@ import random
 
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.mail import send_mail
 from django.db.models import Sum, Case, When, Q, Max, ExpressionWrapper
 from django.forms import model_to_dict
 from django.shortcuts import render
@@ -100,10 +101,28 @@ class UserDetail(LoginRequiredMixin, UpdateView):
 
 
 class SignUpView(CreateView):
-    form_class = PayeeForm
-    model = Payee
-    template_name = 'registration/new_user.html'
+    form_class = UserSignUpForm
+    model = User
+    template_name = 'registration/new_user1.html'
     context_object_name = 'user'
+    success_url = reverse_lazy('login')
+
+    def post(self, request, *args, **kwargs):
+        print(dict(self.request.POST))
+        code = self.request.POST.get('code')
+        email = self.request.POST.get('email')
+        print(email, code)
+
+        return super(SignUpView, self).post(request, **kwargs)
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        print(7777, form.check_code())
+        if form.check_code():
+            self.object = form.save(form)
+            return super().form_valid(form)
+        form.add_error('code', 'wrong verification code')
+        return super().form_invalid(form)
 
 
 class TransactionList(LoginRequiredMixin, ListView):
@@ -128,7 +147,7 @@ class TransactionList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         print(self.balance)
-        self.balance['balance'] = round(self.balance['balance'], 2) if self.balance else 0
+        self.balance['balance'] = round(self.balance['balance'], 2) if self.balance['balance'] else 0
         context = super().get_context_data(**kwargs)
         context['title'] = 'Chek transactions'
         context['balance'] = self.balance
@@ -147,6 +166,20 @@ class PayeeView(LoginRequiredMixin, CreateView):
     raise_exception = True
     success_url = reverse_lazy('transaction_list')
     #permission_required = 'transaction.can_edit'
+
+    def post(self, request, *args, **kwargs):
+        print(dict(self.request.POST))
+        code = self.request.POST.get('code')
+        email = self.request.POST.get('email_payee')
+        print(email, code)
+        send_mail(
+            'Password recovery',
+            f"code for recovery: {code}",
+            'znnintway@gmail.com',  # from settings
+            [email],
+            fail_silently=False,
+        )
+        return super(PayeeView, self).post(request, **kwargs)
 
     def form_valid(self, form):
         form.instance.user_id = self.request.user
