@@ -60,9 +60,9 @@ class User(AbstractUser):
     email = models.EmailField(msg('email address'), unique=True)
     phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
     mobile = models.CharField(validators=[phoneNumberRegex], max_length=16, unique=True)
-    date_of_birth = models.DateField(blank=True, null=True)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICE, null=True)
-    avatar = models.ImageField(upload_to='uploads/image', blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)  # delete
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICE, null=True)  # delete
+    avatar = models.ImageField(upload_to='uploads/image', blank=True, null=True) # delete
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = UserManager()
