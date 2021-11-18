@@ -114,7 +114,6 @@ class Transaction(models.Model):
     #         return self.description
 
 
-
 class Payee(models.Model):
     user_id = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True)
     email_payee = models.EmailField(msg('email address'))
