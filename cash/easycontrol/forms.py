@@ -18,6 +18,29 @@ class LoginUserForm(forms.Form):
         fields = ('email', 'password')
 
 
+class UserSignUpForm(UserCreationForm): # add position
+    """A form for creating new users. Includes all the required
+        fields, plus a repeated password."""
+    code = forms.IntegerField(label='Verification code')
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'mobile', 'code')  # add position
+        labels = {
+            'code': 'Verification code',
+        }
+
+    def check_code(self):
+        email = self.cleaned_data['email']
+        ver_code = self.cleaned_data['code']
+        member_code = 5555
+        print(ver_code, member_code)
+        if ver_code == member_code:
+            return True
+        return False
+
 class UserDetailForm(forms.ModelForm):
 
     class Meta:
@@ -112,8 +135,8 @@ class VoucherCreateForm(forms.ModelForm):
         #     'description': 'Office consumables',
         # }
 
-p = VoucherCreateForm(auto_id=False)
-print(p)
+p = UserSignUpForm(auto_id=False)
+print(8888, p)
 
 
 
