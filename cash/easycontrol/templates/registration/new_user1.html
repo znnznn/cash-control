@@ -1,0 +1,44 @@
+{% extends 'registration/main.html'  %}
+
+{% block title  %}
+     {{ title }}
+{% endblock %}
+
+{% block body  %}
+
+<body class="bg-light">
+    <div class="container">
+
+        <h3 style="color:#535556">Petty Cash user’s registration page</h3>
+
+        <div class="col-md-8 order-md-1">
+           {% if message %}
+            <ul class=flashes>
+              <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+            </ul>
+            {% endif %}
+              <form method="post" class="needs-validation" style="color:#535556">{% csrf_token %}
+
+                  <table>
+                      {{ form.as_table  }}
+                  </table>
+
+                   <p>
+                    <a>
+                      <button  formmethod="post" class="btn btn-primary btn-lg btn" type="submit">Sign Up</button>
+                    </a>
+                  </p>
+
+              </form>{% csrf_token %}
+
+</div>
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">© 2021-2021 Easy Control</p>
+
+  </footer>
+
+</body>
+
+{% endblock %}
