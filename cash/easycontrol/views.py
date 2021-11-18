@@ -103,7 +103,7 @@ class UserDetail(LoginRequiredMixin, UpdateView):
 class SignUpView(CreateView):
     form_class = UserSignUpForm
     model = User
-    template_name = 'registration/new_user1.html'
+    template_name = 'registration/new_user.html'
     context_object_name = 'user'
     success_url = reverse_lazy('login')
 
