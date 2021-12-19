@@ -1,7 +1,7 @@
 from django.contrib.admin import AdminSite
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as userAdmin
-from django.utils.translation import ugettext_lazy as msg
+from django.utils.translation import gettext_lazy as msg
 from .models import *
 
 AdminSite.site_header = msg('Easy Cash Control')
