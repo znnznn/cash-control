@@ -17,6 +17,19 @@ class LoginUserForm(forms.Form):
     class Meta:
         fields = ('email', 'password')
 
+    def clean(self, *args, **kwargs):
+        email = self.cleaned_data.get("email")
+        password = self.cleaned_data.get("password")
+        user = authenticate(email=email, password=password)
+        print('user', user)
+        if not user:
+            raise forms.ValidationError("Incorrect Email or Incorrect Password")
+        # if not user.check_password(password):
+        #     raise forms.ValidationError("Incorrect Password")
+        if not user.is_active:
+            raise forms.ValidationError("User nO longer Active")
+        return super(LoginUserForm, self).clean(*args, **kwargs)
+
 
 class UserSignUpForm(UserCreationForm): # add position
     """A form for creating new users. Includes all the required
@@ -40,6 +53,7 @@ class UserSignUpForm(UserCreationForm): # add position
         if ver_code == member_code:
             return True
         return False
+
 
 class UserDetailForm(forms.ModelForm):
 
@@ -135,7 +149,7 @@ class VoucherCreateForm(forms.ModelForm):
         #     'description': 'Office consumables',
         # }
 
-p = UserSignUpForm(auto_id=False)
+p = LoginUserForm(auto_id=False)
 print(8888, p)
 
 
