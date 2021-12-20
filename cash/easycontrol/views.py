@@ -1,7 +1,7 @@
 import random
 
 import requests
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail
 from django.db.models import Sum, Case, When, Q, Max, ExpressionWrapper
 from django.forms import model_to_dict
@@ -38,7 +38,7 @@ class LoginUser(views.FormView):
         if email is not None and password:
             user = authenticate(self.request, email=email, password=password)
             if user is None:
-                raise self.form_class.get_invalid_login_error()
+                form.form_invalid()
             else:
                 login(self.request, user)
         return super(LoginUser, self).form_valid(form)
@@ -125,12 +125,18 @@ class SignUpView(CreateView):
         return super().form_invalid(form)
 
 
-class TransactionList(LoginRequiredMixin, ListView):
+class TransactionList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Transaction()
     template_name = 'registration/usertransaction.html'
     context_object_name = 'transaction'
     #allow_empty = True
     balance = ''
+    redirect_field_name = 'login'
+
+    def test_func(self):
+
+        print('test_func', self.request.user.is_staff)
+        return self.request.user.is_staff
 
     def get_queryset(self):
         if not self.request.user.is_staff:
