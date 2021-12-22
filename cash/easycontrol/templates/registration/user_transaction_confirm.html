@@ -1,0 +1,63 @@
+{% extends 'registration/main.html'  %}
+
+{% block title  %}
+     {{ title }}
+
+{% endblock %}
+
+{% block body  %}
+<div class="container" style="color:#535556">
+<h2 >{{title}}</h2>
+</div>
+    <div class="container">
+        <form action="{% url 'transaction_confirm' %}" enctype="multipart/form-data">{% csrf_token %}
+            <div class="mb-3">
+                <table>
+                    {{ form.as_table  }}
+
+                </table>
+<!--                    {{ currency_data }}-->
+                <script type="text/javascript">
+
+                window.onload = function () {
+                var result;
+                var num1 = Number(document.getElementById("id_credit").value);
+
+                if ( num1>0 ) {
+
+                var num_rate = Number(document.getElementById("id_rate").value);
+                result = num1 / num_rate;
+                result = String(result.toFixed(2)) + String(' $ in credit') ;
+                document.getElementById("result").innerHTML = result;
+                }
+
+                else {
+
+                var result;
+                var num1 = Number(document.getElementById("id_debit").value);
+                var num_rate = Number(document.getElementById("id_rate").value);
+                result = num1 / num_rate;
+                result = String(result.toFixed(2)) + String(' $ in debit');
+                document.getElementById("result").innerHTML = result;
+                }
+
+                }
+
+
+
+                </script>
+                <h3><p id="result">$</p></h3>
+                <noscript>gfgfg</noscript>
+            </div>
+            <div>
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+  <button formmethod="post" formaction="{% url 'home' %}" type="submit" class="btn btn-danger">Delete</button>
+  <button formmethod="post" formaction="{% url 'report' %}" type="submit" class="btn btn-warning">Edit</button>
+  <button formmethod="post" formaction="{% url 'report_confirm' %}" type="submit" class="btn btn-success">Confirm</button>
+  <button formmethod="post" formaction="{% url 'report_confirm' %}" type="submit" class="btn btn-success">Add new</button>
+</div>
+        </form>{% csrf_token %}
+    </div>
+
+{% endblock %}
