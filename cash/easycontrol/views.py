@@ -125,7 +125,7 @@ class SignUpView(CreateView):
         return super().form_invalid(form)
 
 
-class TransactionList(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class TransactionList(LoginRequiredMixin, ListView):
     model = Transaction()
     template_name = 'registration/usertransaction.html'
     context_object_name = 'transaction'
@@ -133,10 +133,10 @@ class TransactionList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     balance = ''
     redirect_field_name = 'login'
 
-    def test_func(self):
-
-        print('test_func', self.request.user.is_staff)
-        return self.request.user.is_staff
+    # def test_func(self): # UserPassesTestMixin
+    #
+    #     print('test_func', self.request.user.is_staff)
+    #     return self.request.user.is_staff
 
     def get_queryset(self):
         if not self.request.user.is_staff:
@@ -162,6 +162,49 @@ class TransactionList(LoginRequiredMixin, UserPassesTestMixin, ListView):
         print(context['transaction'])
 
         return context
+
+
+class VoucherDetailView(LoginRequiredMixin, UpdateView):
+    form_class = VoucherConfirmForm
+    model = Transaction
+    template_name = 'registration/user_transaction_confirm.html'
+    context_object_name = 'transaction'
+    allow_empty = True
+    balance = ''
+    redirect_field_name = 'login'
+    #fields = ['__all__']
+    # initial = {}
+    #
+    # def get_initial(self):
+    #     """initialize your's form values here"""
+    #     self.initial += self.get_object()
+    #     base_initial = super().get_initial()
+    #     # So here you're initiazing you're form's data
+    #     # base_initial['dataset_request'] = DatasetRequest.objects.filter(
+    #     #     creator=self.request.user
+    #     # )
+    #     return base_initial
+
+    def get(self, request, *args, **kwargs):
+        self.form_class = self.get_for(self.request.user.is_staff)
+        print('GET',self.request.GET.get('pk'))
+        self.kwargs['pk'] = int(self.request.GET.get('pk'))
+        self.kwargs['object'] = self.get_object()
+        print(self.kwargs['object'])
+        return super(VoucherDetailView, self).get(request, *args, **kwargs)
+
+    def get_for(self, is_staff):
+        if is_staff:
+            return VoucherUpdateForm
+        else:
+            return VoucherConfirmForm
+
+    # def post(self, request, *args, **kwargs):
+    #     self.kwargs['pk'] = int(self.request.POST.get('pk'))
+    #     self.object = self.get_object()
+    #     #form = super(Transaction, self).get_form(self.form_class)
+    #     return super(VoucherDetailView, self).post(request, *args, **kwargs)
+
 
 
 class PayeeView(LoginRequiredMixin, CreateView):
