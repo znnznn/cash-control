@@ -21,13 +21,12 @@ class LoginUserForm(forms.Form):
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
         user = authenticate(email=email, password=password)
-        print('user', user)
         if not user:
             raise forms.ValidationError("Incorrect Email or Incorrect Password")
         # if not user.check_password(password):
         #     raise forms.ValidationError("Incorrect Password")
         if not user.is_active:
-            raise forms.ValidationError("User nO longer Active")
+            raise forms.ValidationError("User no longer Active")
         return super(LoginUserForm, self).clean(*args, **kwargs)
 
 
@@ -149,7 +148,55 @@ class VoucherCreateForm(forms.ModelForm):
         #     'description': 'Office consumables',
         # }
 
-p = LoginUserForm(auto_id=False)
+
+class VoucherConfirmForm(forms.ModelForm):
+    rate = forms.CharField(initial=exchange(), disabled=True)
+
+    class Meta:
+        model = Transaction
+        fields = ('user_id', 'description', 'debit',  'credit', 'cash_register_id', 'rate')
+
+        labels = {
+            'user_id': 'Payee name/Email     ',
+            'cash_register_id': 'currency UAH ',
+        }
+        widgets = {
+            'description': forms.Textarea(attrs={'cols': 25, 'rows': 2, 'placeholder': 'Office consumables'}),
+        }
+
+        # help_texts = {
+        #     'description': 'Office consumables',
+        # }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user_id'].disabled = True
+        self.fields['debit'].disabled = True
+        self.fields['credit'].disabled = True
+        self.fields['cash_register_id'].disabled = True
+
+
+
+class VoucherUpdateForm(forms.ModelForm):
+    rate = forms.CharField(initial=exchange(), disabled=True)
+
+    class Meta:
+        model = Transaction
+        fields = ('user_id', 'description', 'debit',  'credit', 'cash_register_id', 'rate')
+        labels = {
+            'user_id': 'Payee name/Email     ',
+            'cash_register_id': 'currency UAH ',
+        }
+        widgets = {
+            'description': forms.Textarea(attrs={'cols': 25, 'rows': 2, 'placeholder': 'Office consumables' }),
+        }
+
+        # help_texts = {
+        #     'description': 'Office consumables',
+        # }
+
+
+p = VoucherConfirmForm(auto_id=False)
 print(8888, p)
 
 
