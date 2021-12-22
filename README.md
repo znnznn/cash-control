@@ -1,2 +1,2 @@
 # cash-control
-cash control
+cash control - online accounting
