@@ -103,21 +103,12 @@ class UserDetail(LoginRequiredMixin, UpdateView):
 class SignUpView(CreateView):
     form_class = UserSignUpForm
     model = User
-    template_name = 'registration/new_user.html'
+    template_name = 'registration/new_user1.html'
     context_object_name = 'user'
     success_url = reverse_lazy('login')
 
-    def post(self, request, *args, **kwargs):
-        print(dict(self.request.POST))
-        code = self.request.POST.get('code')
-        email = self.request.POST.get('email')
-        print(email, code)
-
-        return super(SignUpView, self).post(request, **kwargs)
-
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
-        print(7777, form.check_code())
         if form.check_code():
             self.object = form.save(form)
             return super().form_valid(form)
@@ -206,7 +197,6 @@ class VoucherDetailView(LoginRequiredMixin, UpdateView):
     #     return super(VoucherDetailView, self).post(request, *args, **kwargs)
 
 
-
 class PayeeView(LoginRequiredMixin, CreateView):
 
     form_class = PayeeForm
@@ -217,37 +207,33 @@ class PayeeView(LoginRequiredMixin, CreateView):
     #permission_required = 'transaction.can_edit'
 
     def post(self, request, *args, **kwargs):
-        print(dict(self.request.POST))
-        code = self.request.POST.get('code')
-        email = self.request.POST.get('email_payee')
-        print(email, code)
-        send_mail(
-            'Password recovery',
-            f"code for recovery: {code}",
-            'znnintway@gmail.com',  # from settings
-            [email],
-            fail_silently=False,
-        )
+        self.code = random.randrange(99999, 999999)
+        email_payee = self.request.POST.get('email_payee')
+        try:
+            payee_user = User.objects.get(email=email_payee)
+        except:
+            try:
+                send_mail(
+                    'Password recovery',
+                    f"code for recovery: {self.code}",
+                    'znnintway@gmail.com',  # from settings
+                    [email_payee],
+                    fail_silently=False,
+                )
+            except:
+                form = self.get_form(self.form_class)
+                form.add_error('email_payee', 'Wrong email')
         return super(PayeeView, self).post(request, **kwargs)
 
     def form_valid(self, form):
         form.instance.user_id = self.request.user
+        form.instance.code = self.code
         return super(PayeeView, self).form_valid(form)
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     form = self.get_form_kwargs()
-    #     print(7777, form)
-    #     print(self.request.POST)
-    #     # print(self.request.kwargs)
-    #     return super(PayeeView, self).post(request, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        code = random.randrange(99999, 999999)
         context = super().get_context_data(**kwargs)
         context['title'] = 'Payee | Counter Party'
         context['btn'] = self.request.user.is_staff
-        context['code'] = code
-        print(context)
         return context
 
 
