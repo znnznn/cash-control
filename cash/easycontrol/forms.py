@@ -1,12 +1,25 @@
+import datetime
+
 import requests
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, ReadOnlyPasswordHashField, UserChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.db.models import Max
 from django.forms import Textarea
 #from .views import exchange
 from .models import *
+
+
+def exchange(currency_code='USD'):
+    url = f"https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode={currency_code}&json"
+    my_url = requests.get(url)
+    cookes = my_url.cookies
+    my_url = requests.get(url, cookies=cookes)
+    my_url = my_url.json()
+    currency_rate = my_url[0]
+    return currency_rate['rate']
 
 
 class LoginUserForm(forms.Form):
@@ -17,7 +30,7 @@ class LoginUserForm(forms.Form):
     class Meta:
         fields = ('email', 'password')
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
         user = authenticate(email=email, password=password)
@@ -27,7 +40,7 @@ class LoginUserForm(forms.Form):
         #     raise forms.ValidationError("Incorrect Password")
         if not user.is_active:
             raise forms.ValidationError("User no longer Active")
-        return super(LoginUserForm, self).clean(*args, **kwargs)
+        return super(LoginUserForm, self).clean()
 
 
 class UserSignUpForm(UserCreationForm): # add position
@@ -47,9 +60,11 @@ class UserSignUpForm(UserCreationForm): # add position
     def check_code(self):
         email = self.cleaned_data['email']
         ver_code = self.cleaned_data['code']
-        member_code = 5555
-        print(ver_code, member_code)
+        payee = Payee.objects.filter(email_payee=email, confirmed_date__isnull=True).last()
+        member_code = payee.code
         if ver_code == member_code:
+            payee.confirmed_date = timezone.now()
+            payee.save()
             return True
         return False
 
@@ -77,58 +92,19 @@ class PayeeForm(forms.ModelForm):
 
     class Meta:
         model = Payee
-        fields = ('email_payee', 'code')
-
-
-#forms.BaseInlineFormSet
-
-class CombinedFormBase(forms.Form):
-    form_classes = []
-
-    def __init__(self, *args, **kwargs):
-        super(CombinedFormBase, self).__init__(*args, **kwargs)
-        for f in self.form_classes:
-            name = f.__name__.lower()
-            setattr(self, name, f(*args, **kwargs))
-            form = getattr(self, name)
-            self.fields.update(form.fields)
-            self.initial.update(form.initial)
-
-    def is_valid(self):
-        isValid = True
-        for f in self.form_classes:
-            name = f.__name__.lower()
-            form = getattr(self, name)
-            if not form.is_valid():
-                isValid = False
-        # is_valid will trigger clean method
-        # so it should be called after all other forms is_valid are called
-        # otherwise clean_data will be empty
-        if not super(CombinedFormBase, self).is_valid():
-            isValid = False
-        for f in self.form_classes:
-            name = f.__name__.lower()
-            form = getattr(self, name)
-            self.errors.update(form.errors)
-        return isValid
+        fields = ('email_payee', )
+        unique_together = ('email_payee',)
 
     def clean(self):
-        cleaned_data = super(CombinedFormBase, self).clean()
-        for f in self.form_classes:
-            name = f.__name__.lower()
-            form = getattr(self, name)
-            cleaned_data.update(form.cleaned_data)
-        return cleaned_data
+        cleaned_data = super(PayeeForm, self).clean()
+        email_payee = self.cleaned_data.get("email_payee")
+        try:
+            check_email = User.objects.filter(email=email_payee).exists()
+            if check_email:
+                self.add_error('email_payee', "This email is exist")
+        except:
+            return cleaned_data
 
-
-def exchange(currency_code='USD'):
-    url = f"https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode={currency_code}&json"
-    my_url = requests.get(url)
-    cookes = my_url.cookies
-    my_url = requests.get(url, cookies=cookes)
-    my_url = my_url.json()
-    currency_rate = my_url[0]
-    return currency_rate['rate']
 
 class VoucherCreateForm(forms.ModelForm):
     rate = forms.CharField(initial=exchange(), disabled=True)
@@ -176,7 +152,6 @@ class VoucherConfirmForm(forms.ModelForm):
         self.fields['cash_register_id'].disabled = True
 
 
-
 class VoucherUpdateForm(forms.ModelForm):
     rate = forms.CharField(initial=exchange(), disabled=True)
 
@@ -194,12 +169,3 @@ class VoucherUpdateForm(forms.ModelForm):
         # help_texts = {
         #     'description': 'Office consumables',
         # }
-
-
-p = VoucherConfirmForm(auto_id=False)
-print(8888, p)
-
-
-
-
-
