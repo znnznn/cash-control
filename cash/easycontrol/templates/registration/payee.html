@@ -10,7 +10,7 @@
 <div class="container">
     <div class="col-md-8 order-md-1">
       <h4 class="mb-3" style="color:#535556">The link for payment confirmation</h4>
-      <form method="post" action="{% url 'payee' %}" class="needs-validation" novalidate="" style="color:#535556">
+      <form method="post" action="{% url 'payee' %}" class="needs-validation" style="color:#535556">
           {% csrf_token %}
 <!--        <div class="mb-3">-->
 <!--          <input type="hidden" class="form-control" id="user" name="user_id" value="{{ user_id }}" placeholder="you@example.com" required="">-->
@@ -18,24 +18,27 @@
 <!--            Add email-->
 <!--          </div>-->
 <!--        </div>-->
-        {{ payee }}
+        <p>{{ form.as_p }}</p>
 
 
-        <div class="mb-3">
-          <label for="email_payee">Email payee<span class="text-muted"></span></label>
-          <input type="email" class="form-control" id="email_payee" name="email_payee" value="" placeholder="payee@example.com" required="">
-          <div class="invalid-feedback">
-            Add email
-          </div>
-        </div>
+<!--        <div class="mb-3">-->
+<!--          <label for="{{ form.email_payee.id_for_label }}">Email payee<span class="text-muted"></span></label>-->
+<!--          <input type="email" class="form-control" id="{{ form.email_payee.id_for_label }}" name="email_payee" value="{{ payee.email_payee }}" placeholder="payee@example.com" required="">-->
+<!--          <label>Enter the email address where to send the registration invitation</label>-->
 
-        <div class="mb-3">
-          <label for="code">Enter the email address where to send the registration invitation</label>
-          <input type="hidden" class="form-control" id="code" name="code" value="{{ code }}" placeholder="Code for confirmed" required="">
-          <div class="invalid-feedback">
-            Add Gender
-          </div>
-        </div>
+<!--          <div class="invalid-feedback">-->
+<!--            <p>{{ form.email_payee.errors }}</p>-->
+<!--            Add email-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--          <label for="code">Enter the email address where to send the registration invitation</label>-->
+<!--          <input type="hidden" class="form-control" id="code" name="code" value="{{ code }}" placeholder="Code for confirmed" required="">-->
+<!--          <div class="invalid-feedback">-->
+<!--            Add Gender-->
+<!--          </div>-->
+<!--        </div>-->
 
 
 
