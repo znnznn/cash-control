@@ -102,16 +102,15 @@ class CashRegister(models.Model):
 class Transaction(models.Model):
     user_id = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
     description = models.CharField(max_length=500, default='forgot')
-    debit = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-    credit = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    debit = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    credit = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     status = models.CharField(max_length=55, choices=STATUS_CHOICE, default='Active')
     created_at = models.DateField(default=timezone.now)
     date_of_close = models.DateField(blank=True, null=True)
     cash_register_id = models.ForeignKey(CashRegister, on_delete=models.PROTECT, null=False)
 
     # def __str__(self):
-    #     if self.description:
-    #         return self.description
+    #     return str(self.pk)
 
 
 class Payee(models.Model):
