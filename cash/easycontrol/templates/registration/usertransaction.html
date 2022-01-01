@@ -32,8 +32,10 @@
                     <td>Active</td>
                     {% elif item.status == 'US' %}
                     <td>Unsuccessful</td>
-                    {% else %}
+                    {% elif item.status == 'P' %}
                     <td>Payed</td>
+                    {% else %}
+                    <td>{{ item.status }}</td>
                     {% endif %}
                     <td>{{ item.created_at }}</td>
                     {% if not item.date_of_close%}
@@ -42,19 +44,27 @@
                     <td>{{ item.date_of_close }}</td>
                     {% endif %}
                     <td><li class="list-inline-item"><a href="{% url 'cash_register' item.cash_register_id.id %}">{{ item.cash_register_id.name }} | {{ item.cash_register_id.currency_id.code }}</a></li></td>
-                    {% if btn and item.status != 'P' %}
+
+                    {% if btn and item.status != "P" %}
                     <td> <form id="click-green" action="{% url 'transaction_confirm' %}">{% csrf_token %}<input type="hidden" name="pk" value="{{ item.id }}"><div class="btn-group" role="group" aria-label="Basic mixed styles example">
                       <button type="button" class="btn btn-danger">Delete</button>
                       <button type="button" class="btn btn-warning">Edit</button>
                       <button type="button" class="btn btn-success">Confirm</button>
                     </div></form>{% csrf_token %}</td>
-                    {% elif  not btn and item.status == 'AC' %}
+                    {% elif btn and item.status != "P" %}
+                    <td> <form id="click-green2" action="{% url 'transaction_confirm' %}">{% csrf_token %}<input type="hidden" name="pk" value="{{ item.id }}"><div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                      <button type="button" class="btn btn-danger">Delete</button>
+                      <button type="button" class="btn btn-warning">Edit</button>
+                      <button type="button" class="btn btn-success">Confirm</button>
+                    </div></form>{% csrf_token %}</td>
+                    {% elif not btn and item.status != "Payed" %}
                     <td> <form id="click-red" action="{% url 'transaction_confirm' %}">{% csrf_token %}<input type="hidden" name="pk" value="{{ item.id }}"><button formmethod="get" class="btn btn-primary"  type="submit">Confirm</button></form>{% csrf_token %}</td>
                     {% elif item.status == 'US' %}
                     <td>Unsuccessful</td>
                     {% else %}
                     <td>Confirmed</td>
                     {% endif %}
+
                 </tr>
             {% endfor %}
         </tbody>
