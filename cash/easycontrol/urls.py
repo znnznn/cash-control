@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path, include
+from django.urls import path, include, re_path
 from .views import *
 
 urlpatterns = [
@@ -11,7 +11,7 @@ urlpatterns = [
     path('user/transaction/', TransactionList.as_view(), name='transaction_list'),
     path('user/report/', VoucherCreateView.as_view(), name='report'),
     path('user/report/confirm/', VoucherCreateView.as_view(), name='report_confirm'),
-    path('user/transaction/confirm/', VoucherDetailView.as_view(), name='transaction_confirm'),
+    path('user/transaction/confirm/<int:pk>', VoucherDetailView.as_view(), name='transaction_confirm'),
     path('user/transaction/create/', VoucherCreateView.as_view(), name='transaction_create'),
     path('user/reception/payee/', PayeeView.as_view(), name='payee'),
     path('user/cash/register/<int:cash_register>', VoucherCreateView.as_view(), name='cash_register'),
