@@ -5,7 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.core.mail import send_mail
 from django.db.models import Sum, Case, When, Q, Max, ExpressionWrapper
 from django.forms import model_to_dict
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import views
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, FormView, UpdateView
@@ -58,10 +59,10 @@ class VoucherCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
     template_name = 'registration/voucher_create.html'
     context_object_name = 'voucher'
-    #success_url = reverse_lazy('transaction_list')
+    success_url = reverse_lazy('transaction_list')
 
     def form_valid(self, form):
-        form.instance.user_id = self.request.user
+        #form.instance.user_id = self.request.user
         return super(VoucherCreateView, self).form_valid(form)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -121,6 +122,7 @@ class TransactionList(LoginRequiredMixin, ListView):
     template_name = 'registration/usertransaction.html'
     context_object_name = 'transaction'
     #allow_empty = True
+    paginate_by = 10
     balance = ''
     redirect_field_name = 'login'
 
@@ -155,7 +157,7 @@ class TransactionList(LoginRequiredMixin, ListView):
         return context
 
 
-class VoucherDetailView(LoginRequiredMixin, UpdateView):
+class VoucherDetailView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = VoucherConfirmForm
     model = Transaction
     template_name = 'registration/user_transaction_confirm.html'
@@ -163,26 +165,49 @@ class VoucherDetailView(LoginRequiredMixin, UpdateView):
     allow_empty = True
     balance = ''
     redirect_field_name = 'login'
-    #fields = ['__all__']
-    # initial = {}
+
+    def test_func(self):  # UserPassesTestMixin
+        print('test_func', self.kwargs)
+        pk = self.kwargs.get('pk')
+
+        transaction = get_object_or_404(Transaction, pk=pk)
+        if transaction.user_id == self.request.user or self.request.user.is_staff:
+            return True
+        return False
+
+    # def get_object(self, queryset=None):
+    #     print(self.kwargs)
+    #     print(self.request.POST)
+    #     pk = self.request.GET.get('pk') or self.request.POST.get('pk')
+    #     obj = Transaction.objects.get(id=pk)
+    #     print(obj)
+    #     print(model_to_dict(obj))
+    #     print(11)
+    #     return obj
     #
-    # def get_initial(self):
-    #     """initialize your's form values here"""
-    #     self.initial += self.get_object()
-    #     base_initial = super().get_initial()
-    #     # So here you're initiazing you're form's data
-    #     # base_initial['dataset_request'] = DatasetRequest.objects.filter(
-    #     #     creator=self.request.user
-    #     # )
-    #     return base_initial
+    # def get_queryset(self):
+    #     pk = self.request.GET.get('pk') or self.request.POST.get('pk')
+    #     queryset = Transaction.objects.filter(pk=pk)
+    #     if queryset.user_id == self.request.user.id:
+    #         return queryset
+    #     raise Http404(("No %(verbose_name)s found matching the query") %
+    #                   {'verbose_name': queryset.model._meta.verbose_name})
 
     def get(self, request, *args, **kwargs):
         self.form_class = self.get_for(self.request.user.is_staff)
-        print('GET',self.request.GET.get('pk'))
-        self.kwargs['pk'] = int(self.request.GET.get('pk'))
-        self.kwargs['object'] = self.get_object()
-        print(self.kwargs['object'])
+        print('GET', self.request.GET.get('pk'))
+        #self.kwargs['pk'] = int(self.request.GET.get('pk'))
+        # self.kwargs['object'] = self.get_object()
+        # print(self.kwargs['object'])
         return super(VoucherDetailView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        if form.check():
+            self.object = form.save(form)
+            return super().form_valid(form)
+        form.add_error('user_id', 'no permissions')
+        return super().form_invalid(form)
 
     def get_for(self, is_staff):
         if is_staff:
@@ -190,11 +215,11 @@ class VoucherDetailView(LoginRequiredMixin, UpdateView):
         else:
             return VoucherConfirmForm
 
-    # def post(self, request, *args, **kwargs):
-    #     self.kwargs['pk'] = int(self.request.POST.get('pk'))
-    #     self.object = self.get_object()
-    #     #form = super(Transaction, self).get_form(self.form_class)
-    #     return super(VoucherDetailView, self).post(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        self.kwargs['pk'] = int(self.request.POST.get('pk'))
+        # self.object = self.get_object()
+        #form = super(Transaction, self).get_form(self.form_class)
+        return super(VoucherDetailView, self).post(request, *args, **kwargs)
 
 
 class PayeeView(LoginRequiredMixin, CreateView):
@@ -235,6 +260,17 @@ class PayeeView(LoginRequiredMixin, CreateView):
         context['title'] = 'Payee | Counter Party'
         context['btn'] = self.request.user.is_staff
         return context
+
+
+class CashRegisterDetailView(LoginRequiredMixin, DetailView):
+    pass
+
+
+class CashRegisterCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    pass
+
+
+
 
 
 def exchange(currency_code='USD') -> dict:
