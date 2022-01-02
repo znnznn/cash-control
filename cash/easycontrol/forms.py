@@ -151,6 +151,15 @@ class VoucherConfirmForm(forms.ModelForm):
         self.fields['credit'].disabled = True
         self.fields['cash_register_id'].disabled = True
 
+    def check(self):
+        to_user = self.cleaned_data['user_id']
+        transaction_pk = self.cleaned_data['pk']
+        transaction = Transaction.objects.filter(pk=transaction_pk)
+        if transaction.user_id == to_user:
+            print(True)
+            return True
+        return False
+
 
 class VoucherUpdateForm(forms.ModelForm):
     rate = forms.CharField(initial=exchange(), disabled=True)
