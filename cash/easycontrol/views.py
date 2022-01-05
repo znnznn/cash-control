@@ -17,6 +17,8 @@ from .models import *
 
 from django.contrib.auth import authenticate, login
 
+from .permissions import UserAffiliationMixin
+
 
 class LoginUser(views.FormView):
 
@@ -157,7 +159,7 @@ class TransactionList(LoginRequiredMixin, ListView):
         return context
 
 
-class VoucherDetailView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class VoucherDetailView(LoginRequiredMixin, UserAffiliationMixin, UpdateView):
     form_class = VoucherConfirmForm
     model = Transaction
     template_name = 'registration/user_transaction_confirm.html'
@@ -165,15 +167,6 @@ class VoucherDetailView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     allow_empty = True
     balance = ''
     redirect_field_name = 'login'
-
-    def test_func(self):  # UserPassesTestMixin
-        print('test_func', self.kwargs)
-        pk = self.kwargs.get('pk')
-
-        transaction = get_object_or_404(Transaction, pk=pk)
-        if transaction.user_id == self.request.user or self.request.user.is_staff:
-            return True
-        return False
 
     # def get_object(self, queryset=None):
     #     print(self.kwargs)
